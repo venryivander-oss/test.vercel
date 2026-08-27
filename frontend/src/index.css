@@ -1,0 +1,4 @@
+@import "tailwindcss";
+
+/* Mengubah pemicu dark mode Tailwind v4 dari sistem OS menjadi berbasis class .dark */
+@custom-variant dark (&:where(.dark, .dark *));
