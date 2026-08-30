@@ -151,13 +151,13 @@ const POS = () => {
   const formatRupiah = (number) => new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR' }).format(number);
 
   return (
-    <div className="flex h-full gap-6">
+    <div className="flex flex-col lg:flex-row h-full gap-4 md:gap-6 overflow-y-auto lg:overflow-hidden">
       {/* Left side - Cashier Cart & Input */}
-      <div className="flex-1 bg-white dark:bg-gray-800 rounded-lg shadow-sm flex flex-col overflow-hidden border border-gray-200 dark:border-gray-700">
+      <div className="flex-1 bg-white dark:bg-gray-800 rounded-lg shadow-sm flex flex-col overflow-hidden border border-gray-200 dark:border-gray-700 min-h-[350px]">
         
         {/* Main Cashier Input Header */}
-        <div className="p-4 bg-blue-600 dark:bg-blue-700 text-white flex flex-col md:flex-row gap-3 items-center justify-between">
-          <form onSubmit={handleCashierScanSubmit} className="flex-1 flex gap-2 w-full">
+        <div className="p-3 md:p-4 bg-blue-600 dark:bg-blue-700 text-white flex flex-col sm:flex-row gap-3 items-center justify-between">
+          <form onSubmit={handleCashierScanSubmit} className="flex-1 flex flex-col sm:flex-row gap-2 w-full">
             <div className="relative flex-1">
               <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-gray-400">
                 <ScanLine size={20} className="text-blue-600 dark:text-blue-400" />
@@ -165,13 +165,13 @@ const POS = () => {
               <input 
                 ref={skuInputRef}
                 type="text" 
-                placeholder="Ketik SKU (misal: MKNN-CPCY) atau Scan Barcode, tekan Enter..." 
-                className="w-full pl-10 pr-4 py-3 rounded-lg text-gray-900 dark:text-gray-100 font-semibold border-2 border-blue-200 dark:border-blue-500 bg-white dark:bg-gray-900 focus:outline-none focus:ring-4 focus:ring-blue-300 shadow-inner"
+                placeholder="Ketik SKU atau Scan Barcode, tekan Enter..." 
+                className="w-full pl-10 pr-4 py-2.5 md:py-3 rounded-lg text-gray-900 dark:text-gray-100 font-semibold border-2 border-blue-200 dark:border-blue-500 bg-white dark:bg-gray-900 focus:outline-none focus:ring-4 focus:ring-blue-300 text-sm md:text-base shadow-inner"
                 value={skuInput}
                 onChange={e => setSkuInput(e.target.value)}
               />
             </div>
-            <button type="submit" className="bg-yellow-400 hover:bg-yellow-500 text-blue-900 font-bold px-5 py-3 rounded-lg flex items-center gap-1 shadow-sm">
+            <button type="submit" className="bg-yellow-400 hover:bg-yellow-500 text-blue-900 font-bold px-4 py-2.5 md:py-3 rounded-lg flex items-center justify-center gap-1 shadow-sm text-sm whitespace-nowrap">
               <Check size={18} /> Detect & Tambah
             </button>
           </form>
@@ -185,8 +185,8 @@ const POS = () => {
         )}
 
         {/* Manual Search Fallback Bar */}
-        <div className="p-3 bg-gray-50 dark:bg-gray-700/40 border-b border-gray-200 dark:border-gray-700 flex justify-between items-center gap-4">
-          <div className="relative flex-1">
+        <div className="p-3 bg-gray-50 dark:bg-gray-700/40 border-b border-gray-200 dark:border-gray-700 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 sm:gap-4">
+          <div className="relative flex-1 w-full">
             <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-gray-400">
               <Search size={16} />
             </div>
@@ -214,13 +214,13 @@ const POS = () => {
               </div>
             )}
           </div>
-          <span className="text-xs text-gray-500 dark:text-gray-400 hidden md:inline">*Kursor otomatis aktif di kolom SKU</span>
+          <span className="text-[11px] text-gray-500 dark:text-gray-400 hidden lg:inline">*Auto-focus di SKU</span>
         </div>
 
         {/* Cart Items Table */}
-        <div className="flex-1 overflow-y-auto p-0">
-          <table className="w-full text-left">
-            <thead className="bg-gray-100 dark:bg-gray-700/60 text-gray-600 dark:text-gray-300 border-b border-gray-200 dark:border-gray-700 sticky top-0 text-sm">
+        <div className="flex-1 overflow-x-auto overflow-y-auto p-0 min-h-[200px]">
+          <table className="w-full text-left border-collapse min-w-[500px]">
+            <thead className="bg-gray-100 dark:bg-gray-700/60 text-gray-600 dark:text-gray-300 border-b border-gray-200 dark:border-gray-700 sticky top-0 text-xs md:text-sm">
               <tr>
                 <th className="p-3">SKU & Barang</th>
                 <th className="p-3 text-right">Harga Satuan</th>
@@ -231,7 +231,7 @@ const POS = () => {
             </thead>
             <tbody>
               {cart.map(c => (
-                <tr key={c.product_id} className="border-b border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700/40 text-gray-800 dark:text-gray-200">
+                <tr key={c.product_id} className="border-b border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700/40 text-gray-800 dark:text-gray-200 text-xs md:text-sm">
                   <td className="p-3">
                     <div className="font-bold text-gray-900 dark:text-gray-100">{c.name}</div>
                     <div className="text-xs text-gray-400 font-mono">{c.sku}</div>
@@ -251,8 +251,8 @@ const POS = () => {
               ))}
               {cart.length === 0 && (
                 <tr>
-                  <td colSpan="5" className="p-12 text-center text-gray-400 dark:text-gray-500">
-                    <p className="text-base font-semibold mb-1">Keranjang Kasir Masih Kosong</p>
+                  <td colSpan="5" className="p-8 text-center text-gray-400 dark:text-gray-500">
+                    <p className="text-sm md:text-base font-semibold mb-1">Keranjang Kasir Masih Kosong</p>
                     <p className="text-xs">Ketik SKU barang (contoh: <span className="font-mono bg-gray-100 dark:bg-gray-700 p-1 rounded">MKNN-CPCY</span>) lalu tekan <b>Enter</b>.</p>
                   </td>
                 </tr>
@@ -263,7 +263,7 @@ const POS = () => {
       </div>
 
       {/* Right side - Payment panel */}
-      <div className="w-80 bg-white dark:bg-gray-800 rounded-lg shadow-sm p-5 flex flex-col space-y-4 border border-gray-200 dark:border-gray-700">
+      <div className="w-full lg:w-80 bg-white dark:bg-gray-800 rounded-lg shadow-sm p-4 md:p-5 flex flex-col space-y-4 border border-gray-200 dark:border-gray-700">
         <div>
           <div className="flex justify-between mb-2">
             <span className="text-gray-500 dark:text-gray-400 text-sm">Subtotal</span>
@@ -275,7 +275,7 @@ const POS = () => {
               value={discount} onChange={e => setDiscount(Number(e.target.value))} />
           </div>
           <hr className="my-2 border-gray-200 dark:border-gray-700"/>
-          <div className="flex justify-between items-center text-xl font-bold">
+          <div className="flex justify-between items-center text-lg md:text-xl font-bold">
             <span className="text-gray-800 dark:text-gray-100">Total Tagihan</span>
             <span className="text-blue-600 dark:text-blue-400">{formatRupiah(total)}</span>
           </div>
@@ -284,7 +284,7 @@ const POS = () => {
         {/* Quick Cash Presets */}
         <div>
           <label className="block text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-2">Uang Pas & Nominal Cepat</label>
-          <div className="grid grid-cols-2 gap-2 mb-2">
+          <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-2 gap-2 mb-2">
             <button 
               type="button"
               onClick={() => setPaidAmount(total)}
@@ -327,7 +327,7 @@ const POS = () => {
             step="1000" 
             min="0"
             placeholder="0"
-            className="w-full border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-800 dark:text-gray-100 p-3 rounded-lg text-xl text-right font-bold focus:ring-2 focus:ring-blue-500" 
+            className="w-full border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-800 dark:text-gray-100 p-2.5 md:p-3 rounded-lg text-lg md:text-xl text-right font-bold focus:ring-2 focus:ring-blue-500" 
             value={paidAmount || ''} 
             onChange={e => setPaidAmount(Number(e.target.value))} 
           />
@@ -336,7 +336,7 @@ const POS = () => {
 
         <div className="bg-gray-50 dark:bg-gray-700/50 p-3 rounded-lg border border-gray-200 dark:border-gray-700">
           <label className="block text-gray-500 dark:text-gray-400 text-xs mb-1">Uang Kembalian</label>
-          <div className={`text-xl font-bold text-right ${change >= 0 ? 'text-green-600 dark:text-green-400' : 'text-red-500 dark:text-red-400'}`}>
+          <div className={`text-lg md:text-xl font-bold text-right ${change >= 0 ? 'text-green-600 dark:text-green-400' : 'text-red-500 dark:text-red-400'}`}>
             {change >= 0 ? formatRupiah(change) : 'Uang Kurang'}
           </div>
         </div>
@@ -345,7 +345,7 @@ const POS = () => {
         <button 
           onClick={() => handleCheckout()}
           disabled={cart.length === 0 || paidAmount < total}
-          className="w-full bg-blue-600 hover:bg-blue-700 disabled:bg-gray-300 dark:disabled:bg-gray-700 text-white p-3.5 rounded-lg flex items-center justify-center space-x-2 font-bold text-base transition-colors shadow-sm"
+          className="w-full bg-blue-600 hover:bg-blue-700 disabled:bg-gray-300 dark:disabled:bg-gray-700 text-white p-3 md:p-3.5 rounded-lg flex items-center justify-center space-x-2 font-bold text-sm md:text-base transition-colors shadow-sm"
         >
           <CheckCircle size={20} /> <span>Bayar Sekarang</span>
         </button>
@@ -355,7 +355,7 @@ const POS = () => {
           type="button"
           onClick={handleQuickDemoCheckout}
           disabled={cart.length === 0}
-          className="w-full bg-purple-600 hover:bg-purple-700 disabled:bg-gray-200 dark:disabled:bg-gray-700 text-white p-2.5 rounded-lg flex items-center justify-center space-x-2 font-bold text-sm transition-colors shadow-xs"
+          className="w-full bg-purple-600 hover:bg-purple-700 disabled:bg-gray-200 dark:disabled:bg-gray-700 text-white p-2.5 rounded-lg flex items-center justify-center space-x-2 font-bold text-xs md:text-sm transition-colors shadow-xs"
         >
           <Zap size={16} /> <span>⚡ Demo Bayar Otomatis (Uang Pas)</span>
         </button>
