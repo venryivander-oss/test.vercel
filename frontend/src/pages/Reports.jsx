@@ -24,10 +24,22 @@ const Reports = () => {
     try {
       if (activeTab === 'sales') {
         const res = await api.get(`/reports/sales?startDate=${startDate}&endDate=${endDate}`);
-        setSalesReport(res.data);
+        if (res && res.data) {
+          setSalesReport({
+            sales: Array.isArray(res.data.sales) ? res.data.sales : (Array.isArray(res.data) ? res.data : []),
+            totalRevenue: res.data.totalRevenue || 0,
+            totalTransactions: res.data.totalTransactions || 0
+          });
+        }
       } else {
         const res = await api.get(`/reports/purchases?startDate=${startDate}&endDate=${endDate}`);
-        setPurchasesReport(res.data);
+        if (res && res.data) {
+          setPurchasesReport({
+            purchases: Array.isArray(res.data.purchases) ? res.data.purchases : (Array.isArray(res.data) ? res.data : []),
+            totalExpenditure: res.data.totalExpenditure || 0,
+            totalRestocks: res.data.totalRestocks || 0
+          });
+        }
       }
     } catch (error) {
       console.error('Error fetching report:', error);
@@ -41,7 +53,10 @@ const Reports = () => {
     fetchReportData();
   };
 
-  const formatRupiah = (number) => new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR' }).format(number);
+  const formatRupiah = (number) => new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR' }).format(number || 0);
+
+  const safeSales = Array.isArray(salesReport?.sales) ? salesReport.sales : [];
+  const safePurchases = Array.isArray(purchasesReport?.purchases) ? purchasesReport.purchases : [];
 
   return (
     <div className="space-y-6">
@@ -125,7 +140,7 @@ const Reports = () => {
             </div>
             <div>
               <p className="text-gray-500 dark:text-gray-400 text-xs font-semibold uppercase">Total Transaksi Kasir</p>
-              <p className="text-2xl font-bold text-gray-800 dark:text-gray-100">{salesReport.totalTransactions} Transaksi</p>
+              <p className="text-2xl font-bold text-gray-800 dark:text-gray-100">{salesReport.totalTransactions || 0} Transaksi</p>
               <p className="text-xs text-gray-400 mt-0.5">Nota Penjualan Terbit</p>
             </div>
           </div>
@@ -148,7 +163,7 @@ const Reports = () => {
             </div>
             <div>
               <p className="text-gray-500 dark:text-gray-400 text-xs font-semibold uppercase">Total Faktur Restock</p>
-              <p className="text-2xl font-bold text-gray-800 dark:text-gray-100">{purchasesReport.totalRestocks} Faktur</p>
+              <p className="text-2xl font-bold text-gray-800 dark:text-gray-100">{purchasesReport.totalRestocks || 0} Faktur</p>
               <p className="text-xs text-gray-400 mt-0.5">Surat Jalan/Faktur Masuk</p>
             </div>
           </div>
@@ -168,7 +183,7 @@ const Reports = () => {
 
         <div className="p-0 overflow-x-auto">
           {activeTab === 'sales' ? (
-            <table className="w-full text-left border-collapse">
+            <table className="w-full text-left border-collapse min-w-[600px]">
               <thead>
                 <tr className="bg-gray-50 dark:bg-gray-700/50 text-gray-600 dark:text-gray-300 border-b border-gray-200 dark:border-gray-700 text-sm">
                   <th className="p-4">Tanggal</th>
@@ -180,7 +195,7 @@ const Reports = () => {
                 </tr>
               </thead>
               <tbody>
-                {salesReport.sales.map((s) => (
+                {safeSales.map((s) => (
                   <tr key={s.id} className="border-b border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700/50 text-gray-800 dark:text-gray-200 text-sm">
                     <td className="p-4">{s.date}</td>
                     <td className="p-4 font-mono font-semibold text-blue-600 dark:text-blue-400">{s.invoice_number}</td>
@@ -190,7 +205,7 @@ const Reports = () => {
                     <td className="p-4 text-right font-bold text-green-600 dark:text-green-400">{formatRupiah(s.total_price)}</td>
                   </tr>
                 ))}
-                {salesReport.sales.length === 0 && (
+                {safeSales.length === 0 && (
                   <tr>
                     <td colSpan="6" className="p-8 text-center text-gray-400 dark:text-gray-500">
                       {loading ? 'Memuat data...' : `Tidak ada penjualan ditemukan untuk periode ${startDate} s/d ${endDate}`}
@@ -200,7 +215,7 @@ const Reports = () => {
               </tbody>
             </table>
           ) : (
-            <table className="w-full text-left border-collapse">
+            <table className="w-full text-left border-collapse min-w-[500px]">
               <thead>
                 <tr className="bg-gray-50 dark:bg-gray-700/50 text-gray-600 dark:text-gray-300 border-b border-gray-200 dark:border-gray-700 text-sm">
                   <th className="p-4">Tanggal</th>
@@ -210,7 +225,7 @@ const Reports = () => {
                 </tr>
               </thead>
               <tbody>
-                {purchasesReport.purchases.map((p) => (
+                {safePurchases.map((p) => (
                   <tr key={p.id} className="border-b border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700/50 text-gray-800 dark:text-gray-200 text-sm">
                     <td className="p-4">{p.date}</td>
                     <td className="p-4 font-mono font-semibold text-blue-600 dark:text-blue-400">{p.invoice_number}</td>
@@ -218,7 +233,7 @@ const Reports = () => {
                     <td className="p-4 text-right font-bold text-orange-600 dark:text-orange-400">{formatRupiah(p.total_price)}</td>
                   </tr>
                 ))}
-                {purchasesReport.purchases.length === 0 && (
+                {safePurchases.length === 0 && (
                   <tr>
                     <td colSpan="4" className="p-8 text-center text-gray-400 dark:text-gray-500">
                       {loading ? 'Memuat data...' : `Tidak ada pembelian/restock ditemukan untuk periode ${startDate} s/d ${endDate}`}
