@@ -65,11 +65,12 @@ const Products = () => {
     if (!newCategoryName.trim()) return;
     try {
       const res = await api.post('/categories', { name: newCategoryName });
-      alert(`✅ Kategori "${res.data.name}" berhasil ditambahkan!`);
+      const addedName = res.data?.name || newCategoryName.trim().toUpperCase();
+      alert(`✅ Kategori "${addedName}" berhasil ditambahkan!`);
       setNewCategoryName('');
       setShowCategoryModal(false);
       fetchCategories();
-      setFormData(prev => ({ ...prev, category: res.data.name }));
+      setFormData(prev => ({ ...prev, category: addedName }));
     } catch (error) {
       alert(error.response?.data?.error || 'Gagal menambahkan kategori');
     }
@@ -80,11 +81,12 @@ const Products = () => {
     if (!newUnitName.trim()) return;
     try {
       const res = await api.post('/units', { name: newUnitName });
-      alert(`✅ Satuan "${res.data.name}" berhasil ditambahkan!`);
+      const addedName = res.data?.name || newUnitName.trim();
+      alert(`✅ Satuan "${addedName}" berhasil ditambahkan!`);
       setNewUnitName('');
       setShowUnitModal(false);
       fetchUnits();
-      setFormData(prev => ({ ...prev, unit: res.data.name }));
+      setFormData(prev => ({ ...prev, unit: addedName }));
     } catch (error) {
       alert(error.response?.data?.error || 'Gagal menambahkan satuan');
     }
