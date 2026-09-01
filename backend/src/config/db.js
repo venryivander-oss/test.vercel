@@ -14,16 +14,20 @@ if (process.env.TURSO_DATABASE_URL) {
   console.log('Connected to Turso Cloud SQLite database.');
   initTursoTables(db);
 } else {
-  const sqlite3 = require('sqlite3').verbose();
-  const dbPath = path.resolve(__dirname, '../../database.sqlite');
-  db = new sqlite3.Database(dbPath, (err) => {
-    if (err) {
-      console.error('Error opening local SQLite database:', err.message);
-    } else {
-      console.log('Connected to local SQLite database.');
-      createLocalTables(db);
-    }
-  });
+  try {
+    const sqlite3 = require('sqlite3').verbose();
+    const dbPath = path.resolve(__dirname, '../../database.sqlite');
+    db = new sqlite3.Database(dbPath, (err) => {
+      if (err) {
+        console.error('Error opening local SQLite database:', err.message);
+      } else {
+        console.log('Connected to local SQLite database.');
+        createLocalTables(db);
+      }
+    });
+  } catch (e) {
+    console.warn('Local sqlite3 driver skipped:', e.message);
+  }
 }
 
 async function initTursoTables(client) {
