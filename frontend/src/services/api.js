@@ -1,11 +1,12 @@
 import axios from 'axios';
 
+const isProduction = import.meta.env.PROD;
+
 const api = axios.create({
-  baseURL: import.meta.env.VITE_API_URL || 'http://localhost:5000/api',
-  timeout: 5000,
+  baseURL: isProduction ? '/api' : (import.meta.env.VITE_API_URL || 'http://localhost:5000/api'),
+  timeout: 8000,
 });
 
-// Safety interceptor so backend connection failures return safe default empty arrays/objects instead of crashing React
 api.interceptors.response.use(
   (response) => response,
   (error) => {
